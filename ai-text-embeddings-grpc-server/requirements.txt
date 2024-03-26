@@ -1,0 +1,5 @@
+grpcio-tools
+requests==2.23.0
+tensorflow
+tensorflow_text
+protobuf==3.20.*

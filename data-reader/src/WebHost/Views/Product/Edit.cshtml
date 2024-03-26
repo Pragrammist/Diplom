@@ -1,0 +1,21 @@
+﻿@{
+    @model Product
+}
+
+@using (Html.BeginForm("Edit", "Product", routeValues: new
+{
+    productId = Model.ProductId
+}, FormMethod.Post))
+{
+    <p>
+        @Html.TextBoxFor(m => m.ProductId, htmlAttributes: new {
+            disabled="disabled",
+            style= "display:none"
+        })
+        @Html.LabelFor(m => m.ProductName)
+        @Html.TextBoxFor(m => m.ProductName)
+    </p>
+    <p>
+        <input type="submit" value="Изменить" />
+    </p>
+}

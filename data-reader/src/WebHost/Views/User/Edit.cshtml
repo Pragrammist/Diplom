@@ -1,0 +1,15 @@
+﻿@{
+    @model User
+
+}
+
+@using (Html.BeginForm("Edit", "User", FormMethod.Post))
+{
+    <p>
+        @Html.LabelFor(m => m.Email)
+        @Html.TextBoxFor(m => m.Email)
+    </p>
+    <p>
+        <input type="submit" value="Изменить" />
+    </p>
+}

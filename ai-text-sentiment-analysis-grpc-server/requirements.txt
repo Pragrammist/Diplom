@@ -1,0 +1,5 @@
+grpcio-tools
+requests==2.23.0
+transformers
+torch
+protobuf==3.20.*

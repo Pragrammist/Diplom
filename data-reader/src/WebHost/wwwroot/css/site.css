@@ -1,0 +1,99 @@
+html {
+  font-size: 14px;
+}
+
+@media (min-width: 768px) {
+  html {
+    font-size: 16px;
+  }
+}
+
+.btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
+  box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
+}
+
+html {
+  position: relative;
+  min-height: 100%;
+}
+
+body {
+  margin-bottom: 60px;
+}
+
+
+.cluster-top-info{
+    display:flex;
+    margin-bottom: 5px;
+    flex-direction: column;
+}
+
+.cluster-labels-info{
+    display: flex;
+}
+
+.cluster-top-element {
+    width: 55px;
+    height: 55px;
+    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 5px;
+    font-weight: 700
+}
+
+.cluster-circle {
+    border-radius: 35px;
+}
+
+.b-bottom {
+    
+}
+
+.b-top {
+    border-top: 3px solid gray;
+}
+
+.b-left {
+    border-left: 1px solid gray;
+}
+
+a.text:active, /* активная/посещенная ссылка */
+a.text:hover, /* при наведении */
+a.text {
+    text-decoration: none;
+    color: black;
+}
+
+#product-add-message {
+    border: 1px solid;
+    height: fit-content;
+    width: 500px;
+    position: fixed;
+    right: 10px; 
+    height: 100px;
+    top: 20px;
+    font-size: 20px;
+}
+
+.product-status-sign {
+    width: 50px;
+    height: 50px;
+    font-size: 30px;
+}
+
+.product-status-sign.red{
+    color: red;
+}
+
+.product-status-sign.green{
+    color: green;
+}
+.tag{
+    border-bottom: 1px solid black;
+    font-style: italic;
+}
+.tags-container{
+    
+}

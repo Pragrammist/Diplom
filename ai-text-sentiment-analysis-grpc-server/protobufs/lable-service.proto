@@ -1,0 +1,17 @@
+syntax = "proto3";
+
+message LableTextRequest
+{
+    string text = 1;
+}
+
+message LableResponse
+{
+    string label = 1;
+    float score = 2;
+}
+
+service LableService
+{
+    rpc SendLable(stream LableTextRequest) returns (stream LableResponse);
+}
