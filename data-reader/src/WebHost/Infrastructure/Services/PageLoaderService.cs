@@ -1,6 +1,7 @@
 using System.Text;
 using Hangfire;
 using HtmlAgilityPack;
+using WebHost.Infrastructure.Services;
 
 
 
@@ -193,28 +194,62 @@ public class PageLoaderService
 
         for(int i = 0; i < commentText.Length; i++)
         {
-            var splitedPlaceAndData = (commentPlaceAndDate.ElementAtOrDefault(i) ?? "не удалось спарсить или не известно").Split(',', StringSplitOptions.RemoveEmptyEntries);
-            var date = splitedPlaceAndData.FirstOrDefault()?.Trim() ?? "не удалось спарсить или не известно";
-            var place = splitedPlaceAndData.ElementAtOrDefault(1)?.Trim() ?? "не удалось спарсить или не известно";
-            
-            var label = await _duplexStreamLableService.SendText(commentText[i]);
-            var vector = await _duplexStreamVectorService.SendText(commentText[i]);
-            
-            // var label = new Lable("category", 99);
-            // var vector = new Vector(new []{1f, 2f, 3f});
+            try{
+                
 
-            parsedComments[i] = new CommentData(
-                commentText[i],
-                date,
-                place,
-                internetPlaces.ElementAtOrDefault(i) ?? "не удалось спарсить или не известно",
-                sellers.ElementAtOrDefault(i) ?? "не удалось спарсить или не известно",
-                names.ElementAtOrDefault(i) ?? "не удалось спарсить или не известно",
-                marketplaceIndetificator.MarketPlaceType,
-                marketplaceIndetificator.Url,
-                vector.Embeddings.ToArray(),
-                label
-            );
+
+                var splitedPlaceAndData = (commentPlaceAndDate.ElementAtOrDefault(i) ?? "не удалось спарсить или не известно").Split(',', StringSplitOptions.RemoveEmptyEntries);
+                var date = splitedPlaceAndData.FirstOrDefault()?.Trim() ?? "не удалось спарсить или не известно";
+                var place = splitedPlaceAndData.ElementAtOrDefault(1)?.Trim() ?? "не удалось спарсить или не известно";
+                var label = new Lable("LABEL_1", 99f);
+                try {
+                    label = await _duplexStreamLableService.SendText(commentText[i]);
+                }
+                catch (Exception ex){
+                    _logger.LogError(@$"
+                    =====================================================================================================================
+                        Неполучилось прочить lable: {commentText[i]}
+                    =====================================================================================================================
+                    {ex.Message}
+                    =====================================================================================================================
+                    ");
+                }
+                var emptyEmeddings = new float[527];
+                Array.Fill(emptyEmeddings, 0);
+                var vector = new Vector(emptyEmeddings);
+                try {
+                    vector = await _duplexStreamVectorService.SendText(commentText[i]);
+                }
+                catch (Exception ex){
+                            _logger.LogError(@$"
+                    =====================================================================================================================
+                        Неполучилось прочить эмбединги: {commentText[i]}
+                    =====================================================================================================================
+                    {ex.Message}
+                    =====================================================================================================================
+                    ");
+                }
+                
+                
+                // var label = new Lable("category", 99);
+                // var vector = new Vector(new []{1f, 2f, 3f});
+
+                parsedComments[i] = new CommentData(
+                    commentText[i],
+                    date,
+                    place,
+                    internetPlaces.ElementAtOrDefault(i) ?? "не удалось спарсить или не известно",
+                    sellers.ElementAtOrDefault(i) ?? "не удалось спарсить или не известно",
+                    names.ElementAtOrDefault(i) ?? "не удалось спарсить или не известно",
+                    marketplaceIndetificator.MarketPlaceType,
+                    marketplaceIndetificator.Url,
+                    vector.Embeddings.ToArray(),
+                    label
+                );
+            }
+            catch{
+                continue;
+            }
         }
         return parsedComments;
     }

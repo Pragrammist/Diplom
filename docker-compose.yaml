@@ -1,0 +1,51 @@
+version: "3.9" 
+
+services:
+  data-reader:
+    image: yahuman/diplom-data-reader:2.0
+    environment:
+      - REDIS_CONNECTION_STRING=redis:6379
+      - MSSQL_CONNECTION_STRING_HANGFIRE=Server=mssql,1433;Encrypt=False;Database=Master;User Id=SA;Password=YourSTRONG!Passw0rd
+      - MSSQL_CONNECTION_STRING_APP=Server=mssql,1433;Encrypt=False;Database=App;User Id=SA;Password=YourSTRONG!Passw0rd
+    build: ./data-reader
+    ports:
+      - 8080:80
+    depends_on:
+      - ai-sentiment-analysis
+      - ai-text-embeddings
+      - redis
+      - mssql
+    
+    
+  ai-sentiment-analysis:
+    image: yahuman/ai-sentiment-analis:1.0
+    build: ./ai-text-sentiment-analysis-grpc-server
+    ports:
+      - 50052:50052
+
+  ai-text-embeddings:
+    image: yahuman/ai-sentiment-analis:1.0
+    build: ./ai-text-sentiment-analysis-grpc-server
+    ports:
+      - 50051:50051
+  redis:
+    image: redis:latest
+    ports:
+      - "6379:6379"
+    volumes:
+      - /diplom-data:/root/redis
+      - /diplom-data/redis.conf:/usr/local/etc/redis/redis.conf
+    environment:
+      - REDIS_PORT=6379
+      - REDIS_DATABASES=1
+
+  mssql:
+    image: mcr.microsoft.com/mssql/server
+    environment:
+      - SA_PASSWORD=YourSTRONG!Passw0rd
+      - ACCEPT_EULA=Y
+    ports:
+      - "1433:1433"
+
+
+  

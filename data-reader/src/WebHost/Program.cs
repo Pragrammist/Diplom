@@ -6,7 +6,6 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.EntityFrameworkCore;
 using WebHost.Hubs;
 using Microsoft.AspNetCore.SignalR;
-using static System.Formats.Asn1.AsnWriter;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -26,7 +25,9 @@ services.AddHttpClient("yandexMarketClient", opt => {
 });
 services.AddControllersWithViews();
 
-var sqlServerConStr = "Server=(localdb)\\mssqllocaldb;Integrated Security=SSPI;TrustServerCertificate=True;Encrypt=False;Database=Hangfire;";
+var sqlServerConStr = configuration["MSSQL_CONNECTION_STRING_HANGFIRE"] ?? "Server=(localdb)\\mssqllocaldb;Integrated Security=SSPI;TrustServerCertificate=True;Encrypt=False;Database=Hangfire;";
+var sqlServerConStr2 = configuration["MSSQL_CONNECTION_STRING_APP"] ?? "Server=(localdb)\\mssqllocaldb;Database=UserDataDb;Integrated Security=SSPI;TrustServerCertificate=True;Encrypt=False;";
+
 // Add Hangfire services.
 services.AddHangfire(
     configuration => configuration
@@ -80,14 +81,14 @@ services.AddSingleton(s => {
 });
 
 
-// установка конфигурации подключения
+// пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
 services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
     .AddCookie(options => //CookieAuthenticationOptions
     {
         options.LoginPath = new PathString("/");
     });
 
-var sqlServerConStr2 = "Server=(localdb)\\mssqllocaldb;Database=UserDataDb;Integrated Security=SSPI;TrustServerCertificate=True;Encrypt=False;";
+
 
 services.AddDbContext<AppDbContext>(opt => opt.UseSqlServer(sqlServerConStr2));
 
@@ -131,8 +132,8 @@ var app = builder.Build();
 app.MapHangfireDashboard();
 app.UseStaticFiles();
 
-app.UseAuthentication();    // аутентификация
-app.UseAuthorization();     // авторизация
+app.UseAuthentication();    // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
+app.UseAuthorization();     // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
 // app.Map("yandex-market-omega-test", 
 //     () => BackgroundJob.Enqueue<MarketPlacesObservable>(s => s.NotifyObservers(new MarketplaceIndetificator(
 //         "/product--california-gold-nutrition-omega-800-fish-oil-kaps/1665844608?skuId=101612053899&sku=101612053899&show-uid=16983306626964790098306007&do-waremd5=vhw1HGU3892iXpP3ANPe4w&cpc=CBjd56ZYeZR6QxlrNfXoZgSifR0jHJfl6CJ4O9bQeZVlq4m-KdIVoapGJgaeWZ8usckTaEjdkLYpyTJvgrIE9oId4LTJfErDn6LY1KIWxJ4gvNz-REJLsM-SD91S8_NanrgXMhf2LOoidD8jTRlU3P7dv8z_80V0lZhj2zF-3tP0vF7EEfBWtkBIhd0UwBn0Wud_lJv1_dQe6WxGRRJbqyCNw3Pnt1pQDsHkJl_hP2a4wT3jwi0CtSAom7toBYjrpSspXCtDm40%2C&uniqueId=924574&_redirectCount=1",
@@ -144,7 +145,7 @@ app.Map("/test-hub", async (ctx) =>
 {
     var productsHub = ctx.RequestServices.GetRequiredService<IHubContext<ProductsHub>>();
 
-    await productsHub.Clients.All.SendAsync("SetIsLoaded", "Омега-800 Витамины");
+    await productsHub.Clients.All.SendAsync("SetIsLoaded", "пїЅпїЅпїЅпїЅпїЅ-800 пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ");
 });
 
 // app.Map("yandex-market-omega-test-clustering", 
