@@ -10,6 +10,19 @@ RUN dotnet restore
 # copy everything else and build app
 COPY /src/WebHost .
 
+RUN dotnet publish -c release -o /app --no-restore
+
+
+
+
+# final stage/image
+FROM mcr.microsoft.com/dotnet/aspnet:7.0
+WORKDIR /app
+COPY --from=build /app ./
+
+
+#playwright need it
+###################
 
 RUN apt-get update -yq && apt-get upgrade -yq && apt-get install -yq curl git nano
 RUN curl -sL https://deb.nodesource.com/setup_18.x | bash - && apt-get install -yq nodejs build-essential
@@ -25,21 +38,11 @@ RUN echo "deb http://dl.google.com/linux/chrome/deb/ stable main" >> /etc/apt/so
 RUN apt-get update -y
 RUN apt-get install -y google-chrome-stable 
 
-
-RUN dotnet publish -c release -o /app --no-restore
-
 RUN npx playwright install-deps
 RUN npx playwright install
 
 
-# final stage/image
-FROM mcr.microsoft.com/dotnet/aspnet:7.0
-WORKDIR /app
-COPY --from=build /app ./
-
-
-
-#RUN dotnet build "PlaywrightSharp.csproj" -c Release -o /app/build
+######################
 
 
 
