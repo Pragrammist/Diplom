@@ -6,6 +6,10 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.EntityFrameworkCore;
 using WebHost.Hubs;
 using Microsoft.AspNetCore.SignalR;
+using Hangfire.SqlServer;
+using Microsoft.Data.SqlClient;
+using Microsoft.AspNetCore.Server.Kestrel.Https;
+using Microsoft.AspNetCore.Server.Kestrel.Core;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -25,8 +29,59 @@ services.AddHttpClient("yandexMarketClient", opt => {
 });
 services.AddControllersWithViews();
 
-var sqlServerConStr = configuration["MSSQL_CONNECTION_STRING_HANGFIRE"] ?? "Server=(localdb)\\mssqllocaldb;Integrated Security=SSPI;TrustServerCertificate=True;Encrypt=False;Database=Hangfire;";
+var sqlServerConStr = configuration["MSSQL_CONNECTION_STRING_HANGFIRE"] ?? "Server=(localdb)\\mssqllocaldb;Integrated Security=SSPI;TrustServerCertificate=True;Encrypt=False;Database=Master;";
 var sqlServerConStr2 = configuration["MSSQL_CONNECTION_STRING_APP"] ?? "Server=(localdb)\\mssqllocaldb;Database=UserDataDb;Integrated Security=SSPI;TrustServerCertificate=True;Encrypt=False;";
+
+Console.WriteLine($@"
+============================Hangire============================
+{sqlServerConStr}
+============================Hangfire============================
+");
+
+using (var connection = new SqlConnection(sqlServerConStr))
+{
+    int retries = 0;
+    bool isSuccess = false;
+    while(!isSuccess && retries < 20)
+    {
+        try{
+            retries++;
+            connection.Open();
+            isSuccess = true;
+        }
+        catch(Exception ex)
+        {
+            Console.WriteLine(ex);
+            Console.WriteLine($"Retry is: {retries}");
+            await Task.Delay(5000);
+        }
+        
+    }
+    var command = connection.CreateCommand();
+        command.CommandText = @"
+        IF NOT EXISTS(SELECT * FROM sys.databases WHERE name = 'Hangfire')
+        BEGIN
+            CREATE DATABASE [Hangfire]
+        END";
+        var res = command.ExecuteNonQuery();
+
+    Console.WriteLine($@"
+============================Creation Hangfire Db Result============================
+{res}
+============================Creation Hangfire Db Result============================
+");
+}
+sqlServerConStr = sqlServerConStr.Replace("Master", "Hangfire");
+
+
+
+Console.WriteLine($@"
+============================HangfireReplaced============================
+{sqlServerConStr}
+============================HangfireReplaced============================
+");
+
+
 
 // Add Hangfire services.
 services.AddHangfire(
@@ -35,7 +90,10 @@ services.AddHangfire(
     .UseSimpleAssemblyNameTypeSerializer()
     .UseRecommendedSerializerSettings()
     // .UseRedisStorage(redisConnections, options)
-    .UseSqlServerStorage(sqlServerConStr)
+    .UseSqlServerStorage(sqlServerConStr, new SqlServerStorageOptions
+    {            
+        PrepareSchemaIfNecessary = true
+    })
     .WithJobExpirationTimeout(TimeSpan.FromMinutes(20))
 );
 
@@ -54,13 +112,36 @@ services.AddSingleton(services => {
 
 
 var lableServiceUrl = configuration["LABLE_SERVICE_GRPC_URL"] ?? "http://localhost:50052";
+Console.WriteLine($@"
+============================LABLE_SERVICE_GRPC_URL============================
+{lableServiceUrl}
+============================LABLE_SERVICE_GRPC_URL============================
+");
+
+
+
+
 services.AddGrpcClient<LableService.LableServiceClient>(o => {
     o.Address = new Uri(lableServiceUrl);
+    
+}).ConfigurePrimaryHttpMessageHandler(() => new HttpClientHandler
+{
+    ServerCertificateCustomValidationCallback = HttpClientHandler.DangerousAcceptAnyServerCertificateValidator
 });
 
 var vectorServiceUrl = configuration["VECTOR_SERVICE_GRPC_URL"] ?? "http://localhost:50051";
+Console.WriteLine($@"
+============================VECTOR_SERVICE_GRPC_URL============================
+{vectorServiceUrl}
+============================VECTOR_SERVICE_GRPC_URL============================
+");
+
 services.AddGrpcClient<VectorService.VectorServiceClient>(o => {
     o.Address = new Uri(vectorServiceUrl);
+    
+}).ConfigurePrimaryHttpMessageHandler(() => new HttpClientHandler
+{
+    ServerCertificateCustomValidationCallback = HttpClientHandler.DangerousAcceptAnyServerCertificateValidator
 });
 services.AddSingleton<DuplexStreamLableService>();
 services.AddSingleton<DuplexStreamVectorService>();

@@ -2,50 +2,73 @@ version: "3.9"
 
 services:
   data-reader:
-    image: yahuman/diplom-data-reader:2.0
+    
+    networks: 
+      - main-network
+
+    image: yahuman/diplom-data-reader:1.0
     environment:
+      - ASPNETCORE_ENVIRONMENT=Development
       - REDIS_CONNECTION_STRING=redis:6379
-      - MSSQL_CONNECTION_STRING_HANGFIRE=Server=mssql,1433;Encrypt=False;Database=Master;User Id=SA;Password=YourSTRONG!Passw0rd
-      - MSSQL_CONNECTION_STRING_APP=Server=mssql,1433;Encrypt=False;Database=App;User Id=SA;Password=YourSTRONG!Passw0rd
+      - MSSQL_CONNECTION_STRING_HANGFIRE=Server=mssql,1433;Encrypt=False;User Id=SA;Password=YourSTRONG!Passw0rd;Database=Master;
+      - MSSQL_CONNECTION_STRING_APP=Server=mssql,1433;Encrypt=False;Database=App;User Id=SA;Password=YourSTRONG!Passw0rd;
+      - LABLE_SERVICE_GRPC_URL=http://host.docker.internal:50052
+      - VECTOR_SERVICE_GRPC_URL=http://host.docker.internal:50051
     build: ./data-reader
     ports:
       - 8080:80
     depends_on:
-      - ai-sentiment-analysis
-      - ai-text-embeddings
+      - sentiment
+      - embeddings
       - redis
       - mssql
     
     
-  ai-sentiment-analysis:
-    image: yahuman/ai-sentiment-analis:1.0
+  sentiment:
+    image: yahuman/ai-sentiment-analis:1.1
     build: ./ai-text-sentiment-analysis-grpc-server
     ports:
       - 50052:50052
 
-  ai-text-embeddings:
-    image: yahuman/ai-sentiment-analis:1.0
+    
+
+  embeddings:
+    image: yahuman/ai-sentiment-analis:1.1
     build: ./ai-text-sentiment-analysis-grpc-server
     ports:
       - 50051:50051
+
+
+
   redis:
+    networks: 
+      - main-network
     image: redis:latest
-    ports:
-      - "6379:6379"
+
     volumes:
-      - /diplom-data:/root/redis
-      - /diplom-data/redis.conf:/usr/local/etc/redis/redis.conf
+      - ./diplom-data:/root/redis
+      - ./diplom-data/redis.conf:/usr/local/etc/redis/redis.conf
     environment:
       - REDIS_PORT=6379
       - REDIS_DATABASES=1
-
+  
+  
   mssql:
+    networks: 
+        - main-network
+    user: root
     image: mcr.microsoft.com/mssql/server
+    volumes:
+      - ./diplom-data/mssql/data:/var/opt/mssql/data
+      - ./diplom-data/mssql/log:/var/opt/mssql/log
+      - ./diplom-data/mssql/secrets:/var/opt/mssql/secrets
     environment:
       - SA_PASSWORD=YourSTRONG!Passw0rd
       - ACCEPT_EULA=Y
-    ports:
-      - "1433:1433"
+
+networks:
+  main-network:
+    driver: bridge
 
 
   
