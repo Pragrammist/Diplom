@@ -276,6 +276,24 @@ public class MarketPlaceRepository : IMarketPlaceRepository
 
     }
 
+    
+
+    public async Task ClearCentroidCoordinateSum(string url, int iterator, int clusterCount)
+    {
+        var centroidId = CalcCentroidSumId(url, iterator, clusterCount);
+
+        var cetroidDistValue = await _redisDatabase.StringGetAsync(centroidId);
+
+        if (cetroidDistValue.IsNull)
+            return;
+
+        else
+        {
+            var value = 0;
+
+            await _redisDatabase.StringSetAsync(centroidId, value);
+        }
+    }
 
     public async Task WriteCentroidCoordinateSum(double distance, string url, int iterator, int clusterCount)
     {

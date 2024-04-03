@@ -68,7 +68,6 @@ public interface IMarketPlaceRepository
     Task<LastClusteringIterationResult> GetLastClusterIterationConfiguration(string url);
     
     Task<IEnumerable<LabelInfo>> GetLabelsStatForClusters(string url, int clusterNumber);
-    
-    
+    Task ClearCentroidCoordinateSum(string url, int iterator, int clusterCount);
 }
 

@@ -31,11 +31,12 @@ public class ClusterizationService
 
         int dimensions = await _marketPlaceRepository.GetDimensions(url);
 
-       
+        
 
         var centroids = await GetCentroids(clusterCount, dimensions, url, iterator);
 
-        
+        await _marketPlaceRepository.ClearCentroidCoordinateSum(url, iterator, clusterCount);
+
         await foreach(var comment in _marketPlaceRepository.GetAllCommentsByUrl(url))
         {
             var p = comment.Embeddings;
