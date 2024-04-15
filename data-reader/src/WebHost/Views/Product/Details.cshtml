@@ -1,252 +1,76 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-    
-*@
-@using WebHost.Models;
-@{
-    
+﻿@using WebHost.Models;
+@model ClusteringResultModel
+@using Microsoft.AspNetCore.Html;
 
-    @model ClusteringResultModel
 
-}
 
-@{
-    
-
-    string SetOrGetColor(string label)
+   
+<div class="mt-3">
+    @foreach (var comment in Model.ClusteringResult.Comments)
     {
-        var labelsColors = new Dictionary<string, string>();
-        labelsColors["LABEL_1"] = "#23b013";
-        labelsColors["LABEL_2"] = "#99eb34";
-        labelsColors["LABEL_0"] = "#ebe534";
-        labelsColors["LABEL_3"] = "#eb4934";
-        labelsColors["LABEL_4"] = "#eb3434";
-        return labelsColors[label];
+        <div class="mt-4 mb-4">
+            @await Component.InvokeAsync(nameof(WebHost.Views.Components.MarketplaceComment), new {comment})
+        </div>
     }
+</div>
+    
 
+<div class="d-flex justify-content-center comments-page-navigator">
+    <a class="text text-center ms-2 me-2 h1"
+       asp-route-action="Details"
+       asp-route-productId="@Model.ProductId"
+       asp-route-page="@(Model.Filter.Page - 1)"
+       asp-route-label="@Model.Filter.Label"
+       asp-route-clusterNumber="@Model.Filter.ClusterNumber">
+        &larr;
+    </a>
+    <a class="text text-center ms-2 me-2 h1"
+       asp-route-action="Details"
+       asp-route-productId="@Model.ProductId"
+       asp-route-page="@(Model.Filter.Page + 1)"
+       asp-route-label="@Model.Filter.Label"
+       asp-route-clusterNumber="@Model.Filter.ClusterNumber">
+        &rarr;
+    </a>
+</div>
 
-
+@section LeftPannel {
+    @await Component.InvokeAsync(nameof(WebHost.Views.Components.ProductsInfo))
 }
 
+@section LeftSmallPannel{
+    <div class="market-element">
+        <img src="/imgs/yandex-icon.png"/>
+    </div>
+}
 
-
-
-    <h1 class="mb-5 text-right">
-        <a class="text text-right" href=@(@"https://market.yandex.ru/" + Model.ClusteringResult.ProductUrl)>
-            @Model.ClusteringResult.ProductName
-         </a>
+@section RightPannel
+{
+    <h1 class="mb-5 text-right gradient-text" id="right-pannel-header-text">
+        <a class="text text-right" href=@Model.ClusteringResult.ProductUrl>
+            <b>@Model.ClusteringResult.ProductName</b>
+        </a>
     </h1>
+     
+    @await Component.InvokeAsync(nameof(WebHost.Views.Components.ClusterInfo), new {
+        Model.ProductId,
+        Model.ClusteringResult.CommentCount,
+        Model.ClusteringResult.Tags,
+        Model.ClusteringResult.LabelsInfo,
+        Model.Filter.Label
+    })
 
-    <div class="d-flex justify-content-center">
-        <a class="text text-center ms-2 me-2 h1"
-           asp-route-action="Details"
-           asp-route-productId="@Model.ProductId"
-           asp-route-page="@(Model.Filter.Page - 1)"
-           asp-route-label="@Model.Filter.Label"
-           asp-route-clusterNumber="@Model.Filter.ClusterNumber">
-            &larr;
-        </a>
-        <a class="text text-center ms-2 me-2 h1"
-           asp-route-action="Details"
-           asp-route-productId="@Model.ProductId"
-           asp-route-page="@(Model.Filter.Page + 1)"
-           asp-route-label="@Model.Filter.Label"
-           asp-route-clusterNumber="@Model.Filter.ClusterNumber">
-            &rarr;
-        </a>
-    </div>
-
-    <div class="cluster-top-info mb-5">
-    <div class="cluster-labels-info mb-5">
-        <div class="cluster-top-element">
-            <a class="text text-right"
-                asp-action="Details"
-                asp-route-productId="@Model.ProductId"
-            >
-                @Model.ClusteringResult.CommentCount шт.
-            </a>
-            
+    @foreach (var cluster in Model.ClusteringResult.Clusters)
+    {
+        <div class="mt-3">
+            @await Component.InvokeAsync(nameof(WebHost.Views.Components.ClusterInfo), new {
+                ProductId=Model.ProductId,
+                CommentCount=cluster.CommentCount,
+                Tags=cluster.Tags,
+                LabelsInfo=cluster.labelsInfo,
+                Label=Model.Filter.Label,
+                ClusterNumber=cluster.ClusterNumber,
+            })
         </div>
-            @foreach (var label in Model.ClusteringResult.LabelsInfo)
-            {
-                <div class="cluster-circle cluster-top-element" style="background-color: @SetOrGetColor(label.LabelName) ;">
-                <a class="text text-right"
-                    asp-action="Details"
-                    asp-route-productId="@Model.ProductId"
-                    asp-route-label="@label.LabelName"
-                >
-                    @label.Percent<span>%</span>
-                </a>
-                    
-                </div>
-            }
-            
-        </div>
-        <div class="tags-container"> 
-            @if(Model.Filter.Label is null || Model.Filter.ClusterNumber != 0)
-            {
-                @foreach (var tag in Model.ClusteringResult.Tags)
-                {
-                    <a class="text text-right me-3 tag"
-                        asp-route-action="Details"
-                        asp-route-productId="@Model.ProductId"
-                        asp-route-tag="@tag.Tag"
-                    >
-
-                        @tag.Tag:@tag.Score
-                    </a>
-                    
-                }
-            }
-            else
-            {
-                @foreach (var label in Model.ClusteringResult.LabelsInfo)
-                {
-                    if(label.LabelName == Model.Filter.Label)
-                    {
-                        @foreach (var tag in label.Tags)
-                        {
-                            
-                            <a class="text text-right me-3 tag"
-                                asp-route-action="Details"
-                                asp-route-productId="@Model.ProductId"
-                                asp-route-tag="@tag.Tag"
-                                asp-route-label="@label.LabelName"
-                            >
-
-                                @tag.Tag:@tag.Score
-                            </a>
-                        }
-                    }
-                }
-            }
-        </div>
-    </div>
-    <div class="mt-3">
-        @if (Model.Filter.ClusterNumber == 0)
-        {
-            @foreach (var comment in Model.ClusteringResult.Comments)
-            {
-                <div class="mt-4 mb-4 b-top">
-                    <div class="me-3"><b>@comment.ClientName</b></div>
-                    <div class="d-flex">
-                        <div class="me-3 text-secondary">@comment.InternetPlace</div>
-                        <div class="me-3 text-secondary">@comment.Seller</div>
-                    </div>
-                    <div class="mt-2 mb-2 b-left ms-2 ps-2" style="color: @SetOrGetColor(comment.LabelValue)">@comment.Text</div>
-                    <div class="d-flex">
-                        <div class="me-3 text-secondary">@comment.Date</div>
-                        <div class="me-3 text-secondary">@comment.Place</div>
-                    </div>
-
-                </div>
-            }
-        }
-    </div>
-
-    <div>
-        @foreach (var cluster in Model.ClusteringResult.Clusters)
-        {
-
-        <div class="cluster-top-info mb-5">
-                <div class="cluster-labels-info justify-content-end">
-                    <div class="cluster-top-element">
-                        <a class="text text-right" 
-                            asp-route-action="Details"
-                            asp-route-productId="@Model.ProductId"
-                            asp-route-clusterNumber="@cluster.ClusterNumber"
-                        >
-                            #@cluster.ClusterNumber
-                        </a>
-                        
-                    </div>
-                    <div class="cluster-top-element">
-                        <a class="text text-right" 
-                            asp-route-action="Details"
-                            asp-route-productId="@Model.ProductId"
-                            asp-route-clusterNumber="@cluster.ClusterNumber"
-                        >
-                            @cluster.CommentCount шт.
-                        </a>
-                        
-                    </div>
-                    @foreach (var label in cluster.labelsInfo)
-                    {
-                        <div  class="cluster-circle cluster-top-element" style="background-color: @SetOrGetColor(label.LabelName)">
-                            <a class="text text-right" 
-                                asp-route-action="Details" 
-                                asp-route-productId="@Model.ProductId" 
-                                asp-route-label="@label.LabelName" 
-                                asp-route-clusterNumber="@cluster.ClusterNumber"
-                            >   
-                                @label.Percent
-                                <span>%</span>
-                            </a>
-                        </div>
-                    }
-                </div>
-            </div>
-            <div class="tags-container">
-                @if (Model.Filter.Label is null || Model.Filter.ClusterNumber == 0)
-                {
-                    @foreach (var tag in cluster.Tags)
-                    {
-                        <a class="text text-right me-3 tag"
-                            asp-route-action="Details"
-                            asp-route-productId="@Model.ProductId"
-                            asp-route-tag="@tag.Tag"
-                            asp-route-clusterNumber="@cluster.ClusterNumber"
-                        >
-
-                            @tag.Tag:@tag.Score
-                        </a>
-                    }
-                }
-                else
-                {
-                    @foreach (var label in cluster.labelsInfo)
-                    {
-                        if (label.LabelName == Model.Filter.Label)
-                        {
-                            @foreach (var tag in label.Tags)
-                            {
-                                <a class="text text-right me-3 tag"
-                                    asp-route-action="Details"
-                                    asp-route-productId="@Model.ProductId"
-                                    asp-route-tag="@tag.Tag"
-                                    asp-route-clusterNumber="@cluster.ClusterNumber"
-                                    asp-route-label="@label.LabelName"
-                                >
-                                    @tag.Tag:@tag.Score
-                                </a>
-                            }
-                        }
-                    }
-                }
-            </div>
-            <div class="mt-3">
-                @if(cluster.ClusterNumber == Model.Filter.ClusterNumber)
-                {
-                    @foreach (var comment in Model.ClusteringResult.Comments)
-                    {
-                        <div class="mt-4 mb-4 b-top">
-                            <div class="me-3"><b>@comment.ClientName</b></div>
-                            <div class="d-flex">
-                                <div class="me-3 text-secondary">@comment.InternetPlace</div>
-                                <div class="me-3 text-secondary">@comment.Seller</div>
-                            </div>
-                            <div class="mt-2 mb-2 b-left ms-2 ps-2" style="color: @SetOrGetColor(comment.LabelValue)">@comment.Text</div>
-                            <div class="d-flex">
-                                <div class="me-3 text-secondary">@comment.Date</div>
-                                <div class="me-3 text-secondary">@comment.Place</div>
-                            </div>
-
-                        </div>
-                    }
-                }
-
-            </div>
-        }
-    </div>
-
-
+    }
+}

@@ -380,7 +380,7 @@ public class MarketPlaceRepository : IMarketPlaceRepository
     
     async Task<IEnumerable<TagData>> GetTags(Func<string> IdExpression)
     {
-        const int maxTags = 40;
+        const int maxTags = 6;
         var id = IdExpression();
         var redisResult = await _redisDatabase.SortedSetRangeByScoreWithScoresAsync(id, skip:0, take:maxTags, order: Order.Descending);
         

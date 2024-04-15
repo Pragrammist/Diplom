@@ -19,7 +19,7 @@
 {
     <div class="d-flex">
         <div class="me-1 fw-bolder d-flex align-items-center">#@product.ProductId</div>
-        <a class="text me-1 d-flex align-items-center" asp-action="Details" asp-route-productId=@product.ProductId>
+        <a class="text me-1 d-flex align-items-center" asp-action="Details" asp-controller="Product" asp-route-productId=@product.ProductId>
             @product.ProductName
         </a>
         <a class="text me-1 d-flex align-items-center" href=@(@"https://market.yandex.ru/" + product.Url)> <i>Ссылка на источник</i></a>

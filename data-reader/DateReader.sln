@@ -5,21 +5,21 @@ VisualStudioVersion = 17.0.31903.59
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{26960BF2-8A1F-4E5D-9645-05AE2166462D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebHost", "src\WebHost\WebHost.csproj", "{8B283B96-7035-417A-A74B-938FD8DE3461}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebHost", "src\WebHost\WebHost.csproj", "{8B283B96-7035-417A-A74B-938FD8DE3461}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
-	GlobalSection(SolutionProperties) = preSolution
-		HideSolutionNode = FALSE
-	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{8B283B96-7035-417A-A74B-938FD8DE3461}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{8B283B96-7035-417A-A74B-938FD8DE3461}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8B283B96-7035-417A-A74B-938FD8DE3461}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8B283B96-7035-417A-A74B-938FD8DE3461}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{8B283B96-7035-417A-A74B-938FD8DE3461} = {26960BF2-8A1F-4E5D-9645-05AE2166462D}

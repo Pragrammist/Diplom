@@ -1,0 +1,15 @@
+﻿@using WebHost.Views.Shared.Components.CommentTag;
+@model CommentTagModel
+@using static WebHost.Views.ViewsMethodsHelpers;
+
+
+<a class="text text-right p-1 @GetLabelClass(Model.Label) tag"
+   asp-route-action="Details"
+   asp-route-productId="@Model.ProductId"
+   asp-route-tag="@Model.Tag"
+   asp-route-clusterNumber="@Model.ClusterNumber"
+   asp-route-label="@Model.Label">
+    @Model.Tag (@Model.Score)
+</a>
+
+

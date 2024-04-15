@@ -1,0 +1,49 @@
+﻿@model IEnumerable<Product>
+
+@{
+    var currentUserEmail = User.FindFirst(System.Security.Claims.ClaimsIdentity.DefaultNameClaimType)?.Value;
+}
+
+
+<div class="products-container d-flex flex-column p-4">
+    @foreach (var product in Model)
+    {
+        <div class="d-flex product flex-column">
+            <div class="d-flex align-items-center mb-2">
+                <div class="me-2 fw-bolder d-flex align-items-center gradient-text">#@product.ProductId</div>
+                <a class="text me-2 d-flex align-items-center gradient-text" href=@(@"https://market.yandex.ru/" + product.Url)>
+                    <span class="material-symbols-outlined">
+                        link
+                    </span>
+                </a>
+                @if (currentUserEmail is not null && currentUserEmail == "moderator@gmail.com")
+                {
+                    <a class="me-2 text d-flex align-items-center gradient-text" asp-action="Edit" asp-route-productId=@product.ProductId>
+                        <span class="material-symbols-outlined">
+                            edit
+                        </span>
+                    </a>
+                }
+                <div class="me-2 product-status-sign d-flex align-items-center @(product.IsLoaded ? "gradient-text" : "")">
+                    @if(product.IsLoaded)
+                    {
+                        <span class="material-symbols-outlined">
+                            done
+                        </span>
+                    }
+                    else
+                    {
+                        <span class="material-symbols-outlined">
+                            close
+                        </span>
+                    }
+                </div>
+            </div>
+            <a class="text me-2 d-flex product-name align-items-center" asp-action="Details" asp-route-productId=@product.ProductId>
+                @product.ProductName
+            </a>
+        </div>
+
+    }
+</div>
+

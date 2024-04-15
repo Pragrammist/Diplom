@@ -35,4 +35,7 @@
     <Protobuf Include="Infrastructure\Protobufs\lable-service.proto" GrpcServices="Client" />
     <Protobuf Include="Infrastructure\Protobufs\vector-service.proto" GrpcServices="Client" />
   </ItemGroup>
+  <ItemGroup>
+    <Folder Include="wwwroot\fonts\" />
+  </ItemGroup>
 </Project>

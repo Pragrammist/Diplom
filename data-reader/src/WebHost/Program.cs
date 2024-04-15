@@ -8,8 +8,6 @@ using WebHost.Hubs;
 using Microsoft.AspNetCore.SignalR;
 using Hangfire.SqlServer;
 using Microsoft.Data.SqlClient;
-using Microsoft.AspNetCore.Server.Kestrel.Https;
-using Microsoft.AspNetCore.Server.Kestrel.Core;
 
 var builder = WebApplication.CreateBuilder(args);
 

@@ -6,12 +6,13 @@
     <title>Анализ маркетплейсов</title>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" />
 </head>
 <body>
     <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
+        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar">
             <div class="container-fluid">
-                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">Анализ маркетплейсов</a>
+                <a class="navbar-brand text" asp-area="" asp-controller="Home" asp-action="Index">Анализ маркетплейсов</a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
                         aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
@@ -22,36 +23,36 @@
                             if(User is null || User.Claims.Count() == 0)
                             {
                                 <li class="nav-item">
-                                    <a class="nav-link text-dark" asp-action="Create" asp-controller="User">Регестрация</a>
+                                    <a class="nav-link text" asp-action="Create" asp-controller="User">Регестрация</a>
                                 </li>
                                 <li class="nav-item">
-                                    <a class="nav-link text-dark" asp-action="Login" asp-controller="User">Авторизация</a>
+                                    <a class="nav-link text" asp-action="Login" asp-controller="User">Авторизация</a>
                                 </li>
                             }
                             else
                             {
                                 <li class="nav-item">
-                                    <a class="nav-link text-dark" asp-action="Index" asp-controller="User">
+                                    <a class="nav-link text" asp-action="Index" asp-controller="User">
                                         Ваш личный кабинет
                                     </a>
                                 </li>
                                 <li class="nav-item">
-                                    <a class="nav-link text-dark" asp-action="Edit" asp-controller="User">
+                                    <a class="nav-link text" asp-action="Edit" asp-controller="User">
                                         Изменить ваши данные
                                     </a>
                                 </li>
                                 <li class="nav-item">
-                                    <a class="nav-link text-dark" asp-action="Index" asp-controller="Product">
+                                    <a class="nav-link text" asp-action="Index" asp-controller="Product">
                                         Список всех продуктов
                                     </a>
                                 </li>
                                 <li class="nav-item">
-                                    <a class="nav-link text-dark" asp-action="Create" asp-controller="Product">
+                                    <a class="nav-link text" asp-action="Create" asp-controller="Product">
                                         Добавить продукт
                                     </a>
                                 </li>
                                 <li class="nav-item">
-                                    <a class="nav-link text-dark" asp-action="Logout" asp-controller="User">
+                                    <a class="nav-link text" asp-action="Logout" asp-controller="User">
                                         Выйти
                                     </a>
                                 </li>
@@ -63,10 +64,15 @@
             </div>
         </nav>
     </header>
-    <div class="container">
-        <main role="main" class="pb-3">
+    <div class="d-flex w-100 justify-content-center" id="content-block">
+        <div id="left-small-pannel" class="pt-4">
+            @await RenderSectionAsync("LeftSmallPannel", required: false)
+        </div>
+        <div id="left-pannel" >@await RenderSectionAsync("LeftPannel", required: false)</div>
+        <main role="main" class="p-50">
             @RenderBody()
         </main>
+        <div id="right-pannel" class="p-50 pt-4">@await RenderSectionAsync("RightPannel", required: false)</div>
     </div>
 
     <footer class="border-top footer text-muted">
@@ -81,3 +87,15 @@
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>
+@{
+    string SetOrGetColor(string label)
+    {
+        var labelsColors = new Dictionary<string, string>();
+        labelsColors["LABEL_1"] = "#23b013";
+        labelsColors["LABEL_2"] = "#99eb34";
+        labelsColors["LABEL_0"] = "#ebe534";
+        labelsColors["LABEL_3"] = "#eb4934";
+        labelsColors["LABEL_4"] = "#eb3434";
+        return labelsColors[label];
+    }
+}

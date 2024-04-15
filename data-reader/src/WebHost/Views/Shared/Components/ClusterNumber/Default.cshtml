@@ -1,0 +1,11 @@
+﻿@model  WebHost.Views.Shared.Components.ClusterNumber.ClusterNumberModel;
+@using static WebHost.Views.ViewsMethodsHelpers;
+
+<div class="cluster-top-element cluster-number  @GetLabelClass(Model.Label)">
+    <a class="text text-right"
+       asp-route-action="Details"
+       asp-route-productId="@Model.ProductId"
+       asp-route-clusterNumber="@Model.ClusterNumber">
+        #@Model.ClusterNumber
+    </a>
+</div>

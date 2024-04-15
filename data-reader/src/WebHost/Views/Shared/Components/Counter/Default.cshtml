@@ -1,0 +1,10 @@
+﻿@model WebHost.Views.Shared.Components.CounterComponent.CounterModel;
+
+<div class="cluster-wide-element counter-element">
+    <a class="text text-right"
+       asp-route-action="Details"
+       asp-route-productId="@Model.ProductId"
+       asp-route-clusterNumber="@Model.ClusterNumber">
+        @Model.CommentCount шт.
+    </a>
+</div>

@@ -1,0 +1,63 @@
+﻿@model WebHost.Views.Shared.Components.ClusterInfo.ClusterInfoModel;
+@{
+    IEnumerable<TagData> GetTags()
+    {
+        if (Model.FilterLabel is null)
+            return Model.Tags;
+        else
+            return Model.Labels
+                .FirstOrDefault(label =>
+                    label.LabelName == Model.FilterLabel
+                )?.Tags ?? Enumerable.Empty<TagData>();
+    }
+
+}
+
+
+
+<div class="cluster-top-info mb-5">
+    <div class="me-3 gradient-text">
+        @await Component.InvokeAsync(nameof(WebHost.Views.Components.Counter), new {
+            Model.ProductId,
+            Model.CommentCount,
+            Model.ClusterNumber,    
+        })
+    </div>
+    <div class="cluster-labels-info justify-content-end mb-4">
+        @if(Model.ClusterNumber is not null)
+        {
+            <div class="me-3">
+                @await Component.InvokeAsync(nameof(WebHost.Views.Components.ClusterNumber), new {
+                    Model.ProductId,
+                    Model.ClusterNumber,
+                    Label = Model.FilterLabel
+                })
+            </div>
+        }
+        @foreach (var label in Model.Labels)
+        {
+            <div class="me-3">
+                @await Component.InvokeAsync(nameof(WebHost.Views.Components.LabelComment), new {
+                    Model.ProductId,
+                    Label=label.LabelName,
+                    label.Percent,
+                    Model.ClusterNumber,
+                })
+            </div>
+        }
+    </div>
+    <div class="tags-container">
+        @foreach (var tag in GetTags())
+        {
+            <div class="me-3 mb-3">
+                @await Component.InvokeAsync(nameof(WebHost.Views.Components.CommentTag), new {
+                    productId = Model.ProductId,
+                    tag = tag.Tag,
+                    score = tag.Score,
+                    clusterNumber = Model.ClusterNumber,
+                    label = Model.FilterLabel,
+                })
+            </div>
+        }
+    </div>
+</div>
