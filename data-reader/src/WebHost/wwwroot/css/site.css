@@ -7,13 +7,18 @@ body {
 header {
     background-color: var(--light-bg-color);
 }
+.header-icon{
+    transform: scale(1.6);
+}
 .p-50 {
     padding: 10px 50px;
 }
+
 .p-side-50 {
     padding: 0 50px;
 }
 main {
+    position:relative;
     flex: 11 0;
     background-color: var(--darkest-bg-color);
     -webkit-box-shadow: inset 25px 0px 60px -31px rgba(5,5,5,1), inset -25px 0px 60px -31px rgba(5,5,5,1);
@@ -22,6 +27,40 @@ main {
 }
 .product-name {
     background-color: var(--tag-bg)
+}
+
+.hide{
+    display: none;
+}
+
+
+input:focus {
+    outline-style: solid;
+    outline-width: 3px;
+    outline-color: var(--tag-bg);
+    background-color: transparent;
+}
+
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+input:-webkit-autofill:active {
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: var(--main-font-color);
+    transition: background-color 5000s ease-in-out 0s;
+    box-shadow: inset 0 0 20px 20px var(--light-bg-color);
+}
+
+
+
+input {
+    background-color: transparent;
+    color: var(--main-font-color);
+    border: 0;
+    border-bottom: var(--label-border-size-medium) solid var(--second-color);
+    padding: 6px;
+    display: block;
+    border-radius: var(--message-border-radius)
 }
 
 .market-element img{ 
@@ -43,6 +82,7 @@ main {
 }
 
 :root {
+    --content-block-min-height: 800px;
     --label0: #df4d68;
     /*--label1: #23b013;*/
     --label1: #0c8f64;
@@ -251,41 +291,28 @@ main {
 
 
 
-/*
-.cluster-number.label0 {
-    border-bottom: var(--label-border-size-medium) var(--label0) solid;
-    border-top: var(--label-border-size-medium) var(--label0) solid;
-}
 
-.cluster-number.label1 {
-    border-bottom: var(--label-border-size-medium) var(--label1) solid;
-    border-top: var(--label-border-size-medium) var(--label1) solid;
+.logo-img {
+    max-height: 96px;
 }
-.cluster-number.label2 {
-    border-bottom: var(--label-border-size-medium) var(--label2) solid;
-    border-top: var(--label-border-size-medium) var(--label2) solid;
-}
-
-.cluster-number.label3 {
-    border-bottom: var(--label-border-size-medium) var(--label3) solid;
-    border-top: var(--label-border-size-medium) var(--label3) solid;
-}
-
-.cluster-number.label4 {
-    border-bottom: var(--label-border-size-medium) var(--label4) solid;
-    border-top: var(--label-border-size-medium) var(--label4) solid;
-}
-*/
-
-
 .comment-content {
     background-color: var(--content-bg-color);
     border-radius: var(--message-border-radius);
 }
+.hide-right-pannel {
+    display: none;
+}
+
+.hide-left-pannel {
+    display: none;
+}
+
 #right-pannel {
+    position: relative;
     flex: 5 0;
     border-left: var(--border-pannels-size) var(--light-bg-color) solid;
 }
+
 #right-pannel-header-text {
     
 }
@@ -306,11 +333,12 @@ main {
     border-right: var(--border-pannels-size) var(--light-bg-color) solid;
 }
 #left-pannel {
+    position: relative;
     flex: 5 0;
     border-right: var(--border-pannels-size) var(--light-bg-color) solid;
 }
 #content-block {
-
+    min-height: var(--content-block-min-height);
 }
 
 .secondary-text {
@@ -356,9 +384,44 @@ main {
 .cluster-circle {
     font-size: 14px;
 }
+.side-button {
+    --vertical-margin-size: 0px;
+    position: absolute;
+    top: var(--vertical-margin-size);
+    bottom: var(--vertical-margin-size);
+    width: 100%;
+    display: flex;
+    width: 5px;
+    height: 100%;
+    background-color: var(--tag-bg);
+    border-radius: var(--message-border-radius);
+}
+
+
+
+
+.left-pannel-toggler {
+    display: none;
+    left: 0;
+}
+
+#right-pannel .right-pannel-toggler {
+    left: 0;
+    right: auto;
+}
+
+.right-pannel-toggler {
+    display: none;
+    right: 0;
+}
+
+#left-pannel .left-pannel-toggler {
+    right: 0;
+    left: auto;
+}
+
 
 .b-bottom {
-    
 }
 
 .b-top {
@@ -371,10 +434,12 @@ main {
 
 a.text:active, /* активная/посещенная ссылка */
 a.text:hover, /* при наведении */
-a.text {
+a.text,
+a.text:visited {
     text-decoration: none;
     color: var(--main-font-color);
 }
+
 
 #product-add-message {
     border: 1px solid;
@@ -383,7 +448,7 @@ a.text {
     position: fixed;
     right: 10px; 
     height: 100px;
-    top: 20px;
+    top: 235px;
     font-size: 20px;
 }
 

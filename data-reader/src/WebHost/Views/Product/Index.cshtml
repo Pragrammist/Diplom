@@ -9,23 +9,4 @@
     var currentUserEmail = User.FindFirst(System.Security.Claims.ClaimsIdentity.DefaultNameClaimType)?.Value;
 }
 
-@foreach (var product in Model)
-{
-    <div class="d-flex">
-        <div class="me-1 fw-bolder d-flex align-items-center">#@product.ProductId</div>
-        <a class="text me-1 d-flex align-items-center" asp-action="Details" asp-route-productId=@product.ProductId>
-            @product.ProductName
-        </a>
-        <a class="text me-1 d-flex align-items-center" href=@(@"https://market.yandex.ru/" + product.Url)> <i>Ссылка на источник</i></a>
-        @if (currentUserEmail is not null && currentUserEmail == "moderator@gmail.com")
-        {
-            <a class="me-1 text d-flex align-items-center" asp-action="Edit" asp-route-productId=@product.ProductId>
-                Редактировать
-            </a>
-        }
-        <span class="me-1 product-status-sign d-flex align-items-center @(product.IsLoaded ? "green" : "red")">
-            @(product.IsLoaded ? "V" : "X")
-        </span>
-    </div>
-    
-}
+@await Component.InvokeAsync(nameof(WebHost.Views.Components.ProductsInfo))

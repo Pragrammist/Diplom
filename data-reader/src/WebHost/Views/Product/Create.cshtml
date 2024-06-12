@@ -9,15 +9,15 @@
 @using (Html.BeginForm("Create", "Product", FormMethod.Post))
 {
     <p>
-        @Html.LabelFor(m => m.ProductName)
+        <label>Название товара</label>
         @Html.TextBoxFor(m => m.ProductName)
     </p>
     <p>
-        @Html.LabelFor(m => m.Url)
+        <label>Ссылка на первую страницу с отзывами</label>
         @Html.TextBoxFor(m => m.Url)
     </p>
     <p>
-        <input type="submit" value="Созать" />
+        <input type="submit" value="Добавить" />
     </p>
 }
 

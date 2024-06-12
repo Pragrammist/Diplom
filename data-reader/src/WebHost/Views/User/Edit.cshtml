@@ -6,7 +6,7 @@
 @using (Html.BeginForm("Edit", "User", FormMethod.Post))
 {
     <p>
-        @Html.LabelFor(m => m.Email)
+        <label>Почта</label>
         @Html.TextBoxFor(m => m.Email)
     </p>
     <p>

@@ -2,51 +2,45 @@ version: "3.9"
 
 services:
   data-reader:
-    
-    networks: 
-      - main-network
-
-    image: yahuman/diplom-data-reader:1.0
+    image: yahuman/diplom-data-reader:0.1
     environment:
-      - ASPNETCORE_ENVIRONMENT=Development
       - REDIS_CONNECTION_STRING=redis:6379
       - MSSQL_CONNECTION_STRING_HANGFIRE=Server=mssql,1433;Encrypt=False;User Id=SA;Password=YourSTRONG!Passw0rd;Database=Master;
       - MSSQL_CONNECTION_STRING_APP=Server=mssql,1433;Encrypt=False;Database=App;User Id=SA;Password=YourSTRONG!Passw0rd;
-      - LABLE_SERVICE_GRPC_URL=http://host.docker.internal:50052
-      - VECTOR_SERVICE_GRPC_URL=http://host.docker.internal:50051
+      # - LABLE_SERVICE_GRPC_URL=http://host.docker.internal:50052
+      # - VECTOR_SERVICE_GRPC_URL=http://host.docker.internal:50051
     build: ./data-reader
     ports:
       - 8080:80
     depends_on:
-      - sentiment
-      - embeddings
+      # - sentiment
+      # - embeddings
       - redis
       - mssql
     
     
-  sentiment:
-    image: yahuman/ai-sentiment-analis:1.1
-    build: ./ai-text-sentiment-analysis-grpc-server
-    ports:
-      - 50052:50052
+  # sentiment:
+  #   image: yahuman/ai-sentiment-analis:1.1
+  #   build: ./ai-text-sentiment-analysis-grpc-server
+  #   ports:
+  #     - 50052:50052
 
     
 
-  embeddings:
-    image: yahuman/ai-sentiment-analis:1.1
-    build: ./ai-text-sentiment-analysis-grpc-server
-    ports:
-      - 50051:50051
+  # embeddings:
+  #   image: yahuman/ai-sentiment-analis:1.1
+  #   build: ./ai-text-sentiment-analysis-grpc-server
+  #   ports:
+  #     - 50051:50051
 
 
 
   redis:
-    networks: 
-      - main-network
     image: redis:latest
 
     volumes:
       - ./diplom-data:/root/redis
+      - ./diplom-data:/data
       - ./diplom-data/redis.conf:/usr/local/etc/redis/redis.conf
     environment:
       - REDIS_PORT=6379
@@ -54,8 +48,6 @@ services:
   
   
   mssql:
-    networks: 
-        - main-network
     user: root
     image: mcr.microsoft.com/mssql/server
     volumes:
@@ -66,9 +58,6 @@ services:
       - SA_PASSWORD=YourSTRONG!Passw0rd
       - ACCEPT_EULA=Y
 
-networks:
-  main-network:
-    driver: bridge
 
 
   

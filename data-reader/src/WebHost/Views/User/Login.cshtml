@@ -9,11 +9,11 @@
 @using (Html.BeginForm("Login", "User", FormMethod.Post))
 {
     <p>
-        @Html.LabelFor(m => m.Email)
+        <label>Почта</label>
         @Html.TextBoxFor(m => m.Email)
     </p>
     <p>
-        @Html.LabelFor(m => m.Password)
+        <label>Пароль</label>
         @Html.PasswordFor(m => m.Password)
     </p>
     <p>

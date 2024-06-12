@@ -224,7 +224,7 @@ app.Map("/test-hub", async (ctx) =>
 {
     var productsHub = ctx.RequestServices.GetRequiredService<IHubContext<ProductsHub>>();
 
-    await productsHub.Clients.All.SendAsync("SetIsLoaded", "�����-800 ��������");
+    await productsHub.Clients.All.SendAsync("SetIsLoaded", "Омега-800 Витамины");
 });
 
 // app.Map("yandex-market-omega-test-clustering", 

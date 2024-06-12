@@ -48,6 +48,67 @@ public static class StringSplitExtensions
         return result.Count == 0 ? words : result;
     }
 
+    public static List<TokenInfo> GetTokensInfoWithFilter(this string str)
+    {
+        List<string> words = new List<string>();
+
+
+
+        foreach (var word in str.SplitWordWithFilterOptimized())
+        {
+            if (word.Length == 0)
+                continue;
+
+            words.Add(word.ToString());
+        }
+
+        List<TokenInfo> result = new List<TokenInfo>();
+
+        switch (words.Count)
+        {
+            case 1:
+                var firstToken = new TokenInfo(words.First(), null, null);
+                result.Add(firstToken);
+                break;
+            case 2:
+                var fToken = new TokenInfo(words.First(), null, words[1]);
+                var sToken = new TokenInfo(words[1], words.First(), null);
+                result.Add(fToken);
+                result.Add(sToken);
+                break;
+            default:
+                for (var i = 0; i < 2; i++)
+                {
+                    var currentWord = words[i];
+                    var nextWord = words[i + 1];
+                    var tokenInfo = new TokenInfo(currentWord, null, nextWord);
+                    result.Add(tokenInfo);
+                }
+                for (var i = 1; i < words.Count - 1; i++)
+                {
+                    var currentWord = words[i];
+                    var prevWord = words[i - 1];
+                    var nextWord = words[i + 1];
+                    var tokenInfo = new TokenInfo(currentWord, prevWord, nextWord);
+                    result.Add(tokenInfo);
+                }
+
+                for (var i = words.Count - 1; i < words.Count; i++)
+                {
+                    var currentWord = words[i];
+                    var prevWord = words[i - 1];
+                    var tokenInfo = new TokenInfo(currentWord, prevWord);
+                    result.Add(tokenInfo);
+                }
+                break;
+        }
+
+
+
+        return result;
+    }
+
+
     // Must be a ref struct as it contains a ReadOnlySpan<char>
     public ref struct TextSplitWithFilerEnumerator
     {
@@ -254,6 +315,9 @@ public static class StringSplitExtensions
     }
 
 }
+
+public record TokenInfo(string Token, string? PrevToken = null, string? NextToken = null);
+
 
 
 

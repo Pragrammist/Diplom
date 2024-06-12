@@ -102,8 +102,6 @@ public class MarketPlaceRepository : IMarketPlaceRepository
 
     public async Task WriteCommentToCluster(string commentId, int clusterNumber, string url, int clustersCount, int iterator, string label)
     {
-        var centroidId = CalcCentroidId(clusterNumber, url, clustersCount, iterator);
-        
         await IncrOrStartCounter(CalcLabelDataClusterId(url, label, clusterNumber, iterator, clustersCount));
         await IncrOrStartCounter(CalcCommentCountForClusterId(url, clusterNumber, iterator, clustersCount));
 
@@ -111,7 +109,7 @@ public class MarketPlaceRepository : IMarketPlaceRepository
 
         await SaveCommentsTags(commentId, () => CalcTagsForClusterLabelId(url, clusterNumber, iterator, clustersCount, label));
         
-        await _redisDatabase.SetAddAsync(centroidId, commentId);   
+        await _redisDatabase.SetAddAsync(CalcCentroidId(clusterNumber, url, clustersCount, iterator), commentId);   
     }
 
     
@@ -239,6 +237,43 @@ public class MarketPlaceRepository : IMarketPlaceRepository
             await _redisDatabase.SortedSetIncrementAsync(IdExpression(), word, 1);
         }
     }
+
+    async Task NewTagsSaveMethod(string text)
+    {
+        
+        foreach(var token in text.GetTokensInfoWithFilter())
+        {
+            //сделать нормальный айдишник (уже скорей всего такая логика есть где-то)
+            await _redisDatabase.SortedSetIncrementAsync(":count", token.Token, 1);
+
+
+            //сделать нормальный айдишник
+            if (token.PrevToken is not null)
+                await _redisDatabase.SortedSetIncrementAsync(token.Token, token.PrevToken, 1);
+
+
+            //сделать нормальный айдишник
+            if (token.NextToken is not null)
+                await _redisDatabase.SortedSetIncrementAsync(token.Token, token.NextToken, 1);
+        }
+
+    }
+
+    async Task NewRecreationTagsSaveMethod()
+    {
+
+
+
+
+        //сделать нормальный айдишник (уже скорей всего такая логика есть где-то)
+        foreach (var sortedSetEntry in await _redisDatabase.SortedSetRangeByScoreWithScoresAsync(":count"))
+        {
+            var tokenUsedCount = sortedSetEntry.Score;
+        }
+
+    }
+
+
 
 
     public async Task SaveLastClusterIterationConfiguration(string url, int iterator, int clusterCounts)

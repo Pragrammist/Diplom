@@ -6,10 +6,11 @@ import tensorflow as tf
 import tensorflow_text
 import numpy as np
 import os
+import tensorflow_hub as hub
 
 
 model_path = "universal-sentence-encoder-multilingual-large_3"
-model = tf.saved_model.load(model_path)
+model = hub.load("https://tfhub.dev/google/universal-sentence-encoder-multilingual-large/3")
 
 port = os.environ.get('PORT', '50051')
 

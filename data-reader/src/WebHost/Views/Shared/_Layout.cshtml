@@ -6,24 +6,27 @@
     <title>Анализ маркетплейсов</title>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/adaptive.css" asp-append-version="true" />
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" />
 </head>
 <body>
     <header>
         <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar">
             <div class="container-fluid">
-                <a class="navbar-brand text" asp-area="" asp-controller="Home" asp-action="Index">Анализ маркетплейсов</a>
+                <a class="navbar-brand text" asp-area="" asp-controller="Home" asp-action="Index">
+                    <img src="~/imgs/logo.svg" class="logo-img" />
+                </a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
                         aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
-                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-                    <ul class="navbar-nav flex-grow-1">
+                <div class="navbar-collapse collapse">
+                    <ul class="navbar-nav flex-grow-1 justify-content-end">
                         @{
                             if(User is null || User.Claims.Count() == 0)
                             {
-                                <li class="nav-item">
-                                    <a class="nav-link text" asp-action="Create" asp-controller="User">Регестрация</a>
+                                <li class="nav-item ms-2">
+                                    <a class="nav-link text" asp-action="Create" asp-controller="User">Регистрация</a>
                                 </li>
                                 <li class="nav-item">
                                     <a class="nav-link text" asp-action="Login" asp-controller="User">Авторизация</a>
@@ -31,29 +34,39 @@
                             }
                             else
                             {
-                                <li class="nav-item">
+                                <li class="nav-item ms-2">
                                     <a class="nav-link text" asp-action="Index" asp-controller="User">
-                                        Ваш личный кабинет
+                                        <span class="material-symbols-outlined header-icon">
+                                            account_circle
+                                        </span>
                                     </a>
                                 </li>
-                                <li class="nav-item">
+                                <li class="nav-item ms-2">
                                     <a class="nav-link text" asp-action="Edit" asp-controller="User">
-                                        Изменить ваши данные
+                                        <span class="material-symbols-outlined header-icon">
+                                            settings
+                                        </span>
                                     </a>
                                 </li>
-                                <li class="nav-item">
+                                <li class="nav-item ms-2">
                                     <a class="nav-link text" asp-action="Index" asp-controller="Product">
-                                        Список всех продуктов
+                                        <span class="material-symbols-outlined header-icon">
+                                            list
+                                        </span>
                                     </a>
                                 </li>
-                                <li class="nav-item">
+                                <li class="nav-item ms-2">
                                     <a class="nav-link text" asp-action="Create" asp-controller="Product">
-                                        Добавить продукт
+                                        <span class="material-symbols-outlined header-icon">
+                                            add
+                                        </span>
                                     </a>
                                 </li>
-                                <li class="nav-item">
+                                <li class="nav-item ms-2">
                                     <a class="nav-link text" asp-action="Logout" asp-controller="User">
-                                        Выйти
+                                        <span class="material-symbols-outlined header-icon">
+                                            logout
+                                        </span>
                                     </a>
                                 </li>
                             }
@@ -65,14 +78,22 @@
         </nav>
     </header>
     <div class="d-flex w-100 justify-content-center" id="content-block">
-        <div id="left-small-pannel" class="pt-4">
+        <div id="left-small-pannel" class="pt-4 hide-left-pannel">
             @await RenderSectionAsync("LeftSmallPannel", required: false)
         </div>
-        <div id="left-pannel" >@await RenderSectionAsync("LeftPannel", required: false)</div>
+        <div id="left-pannel" class="hide-left-pannel">
+            <div class="side-button left-pannel-toggler"></div>
+            @await RenderSectionAsync("LeftPannel", required: false)
+        </div>
         <main role="main" class="p-50">
+            <div class="side-button left-pannel-toggler"></div>
+            <div class="side-button right-pannel-toggler"></div>
             @RenderBody()
         </main>
-        <div id="right-pannel" class="p-50 pt-4">@await RenderSectionAsync("RightPannel", required: false)</div>
+        <div id="right-pannel" class="p-50 pt-4 hide-right-pannel">
+            <div class="side-button right-pannel-toggler"></div>
+            @await RenderSectionAsync("RightPannel", required: false)
+        </div>
     </div>
 
     <footer class="border-top footer text-muted">
