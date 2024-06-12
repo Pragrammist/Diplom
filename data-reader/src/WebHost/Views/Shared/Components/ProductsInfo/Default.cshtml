@@ -39,7 +39,7 @@
                     }
                 </div>
             </div>
-            <a class="text me-2 d-flex product-name align-items-center" asp-action="Details" asp-route-productId=@product.ProductId>
+            <a class="text me-2 d-flex product-name align-items-center" asp-controller="Product" asp-action="Details" asp-route-productId=@product.ProductId>
                 @product.ProductName
             </a>
         </div>
